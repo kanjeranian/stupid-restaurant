@@ -8,12 +8,14 @@ export interface Menu {
   imageUrl: string;
 }
 
+const serverBaseUrl = "https://ramsey-aveji-kitchen-3nhnlytkia-as.a.run.app";
+
 export async function getLatestMenu(): Promise<Menu> {
-  const response = await axios.get<Menu>("http://localhost:3010/latest-menu");
+  const response = await axios.get<Menu>(serverBaseUrl + "/latest-menu");
   return response.data;
 }
 
 export async function createRandomMenu(): Promise<Menu> {
-  const response = await axios.post<Menu>("http://localhost:3010/create-menu");
+  const response = await axios.post<Menu>(serverBaseUrl + "/create-menu");
   return response.data;
 }
