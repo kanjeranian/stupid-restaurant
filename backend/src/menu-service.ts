@@ -135,7 +135,7 @@ export class MenuService {
     return [base1, base2, memeable];
   }
 
-  private async createMenuFromIngredients(
+  async createMenuFromIngredients(
     requiredIngredients: string[]
   ): Promise<IMenu> {
     const gptResponse = await this.requestMenuInformation(requiredIngredients);
