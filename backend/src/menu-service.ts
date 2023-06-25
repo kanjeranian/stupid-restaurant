@@ -115,6 +115,13 @@ export class MenuService {
     return Menu.where({}).sort({ createdAt: "desc" }).findOne();
   }
 
+  async getRandomMenu(): Promise<IMenu | null> {
+    const count = await Menu.where().count();
+    const itemIndex = Math.floor(Math.random() * count);
+    const menu = await Menu.where().skip(itemIndex).findOne();
+    return menu as IMenu;
+  }
+
   async createRandomMenu(): Promise<IMenu> {
     const ingredients = this.generateIngredients();
     const menu = await this.createMenuFromIngredients(ingredients);
@@ -158,7 +165,7 @@ export class MenuService {
 
       return menu;
     } catch (e) {
-      return (await this.getLatestMenu()) as IMenu;
+      return (await this.getRandomMenu()) as IMenu;
     }
   }
 

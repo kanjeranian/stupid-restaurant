@@ -45,6 +45,16 @@ function menuToResponse(menu: IMenu) {
     res.json(menuToResponse(menu));
   });
 
+  app.get("/random-menu", async (req, res) => {
+    const menu = await menuService.getRandomMenu();
+    if (menu === null) {
+      res.json(null);
+      return;
+    }
+
+    res.json(menuToResponse(menu));
+  });
+
   app.post("/create-random-menu", async (req, res) => {
     const menu = await menuService.createRandomMenu();
 
