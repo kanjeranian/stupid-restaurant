@@ -9,6 +9,17 @@ interface GPTMenuResponse {
   dallePrompt: string;
 }
 
+const menuInfoPromptTemplate = `create a menu with {{ingredients}} provided information in this json format, please provided the creative name of the menu that people would amaze it, split each ingredients in to arrays element, please specify the DALL-E prompt for generating this menu image which looks disturbing, disgusting and horrible as much as possible
+{
+  "menuName": "string",
+  "creativeName": "string",
+  "ingredients": "string",
+  "description": "string",
+  "dallePrompt": "string",
+}
+
+return me only 1 menu`;
+
 export class MenuService {
   base1Ingredients = [
     "boat noodle",
@@ -146,18 +157,10 @@ export class MenuService {
   }
 
   private async requestMenuInformation(ingredients: string[]): Promise<string> {
-    const prompt = `create a menu with ${ingredients.join(
-      ", "
-    )} provided information in this json format, please provided the creative name of the menu that people would amaze it, split each ingredients in to arrays element, please specify the DALL-E prompt for generating this menu image which looks disturbing, disgusting and horrible as much as possible
-    {
-      "menuName": "string",
-      "creativeName": "string",
-      "ingredients": "string",
-      "description": "string",
-      "dallePrompt": "string",
-    }
-    
-    return me only 1 menu`;
+    const prompt = menuInfoPromptTemplate.replace(
+      "{{ingredients}}",
+      ingredients.join(", ")
+    );
 
     const response = await this.openAIApi.createCompletion({
       model: "text-davinci-003",
