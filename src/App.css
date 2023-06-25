@@ -1,38 +1,141 @@
 .App {
+  background-color: white;
   text-align: center;
+  justify-content: center;
+  display: flex;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+  /* border: solid green; */
+  max-width: 720px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.headerImg {
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
+.logoImg {
+  width: 75%;
+}
+
+.orderButton {
+  margin-top: 20px;
+  width: 50%;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loading {
+  width: 40%;
+}
+
+.cookingText {
+  width: 40%;
+}
+
+.orderButton:hover {
+  cursor: pointer;
+  margin-top: 10px;
+  width: 60%;
+}
+
+.board-container {
+  background-image: url(./assets/board.png);
   min-height: 100vh;
+  width: 100%;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding-bottom: 50px;
 }
 
-.App-link {
-  color: #61dafb;
+.board-content {
+  padding-top: 200px;
+  font-weight: bolder;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.menuName {
+  font-size: 40px;
+  max-width: 400px;
+}
+
+.menuImageContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.tape {
+  margin-top: 20px;
+  width: 240px;
+  z-index: 1;
+}
+
+.menuImage {
+  margin-top: -36px;
+  max-width: 350px;
+  width: 90%;
+}
+
+.menuIngredients {
+  padding-top: 20px;
+  font-size: 32px;
+  font-weight: lighter;
+  max-width: 400px;
+}
+
+.description {
+  padding-top: 30px;
+  font-size: 28px;
+}
+
+.menuDescription {
+  font-size: 24px;
+  font-weight: lighter;
+  padding: 20px 40px;
+  max-width: 700px;
+}
+
+@media screen and (max-width: 670px) {
+  .board-content {
+    padding-top: 180px;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media screen and (max-width: 600px) {
+  .board-content {
+    padding-top: 130px;
+  }
+  .menuName {
+    font-size: 32px;
+  }
+  .menuIngredients {
+    font-size: 28px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .board-content {
+    padding-top: 110px;
+  }
+  .menuName {
+    font-size: 28px;
+    max-width: 200px;
+  }
+  .menuIngredients {
+    font-size: 24px;
+    max-width: 300px;
+  }
+  .menuDescription {
+    font-weight: lighter;
+    padding: 20px 40px;
   }
 }
