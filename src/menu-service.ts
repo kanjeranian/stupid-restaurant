@@ -1,11 +1,16 @@
 import axios from "axios";
 
 export interface Menu {
-  menuName: string;
+  name: string;
   creativeName: string;
   ingredients: string[];
   description: string;
-  imageUrl?: string;
+  imageUrl: string;
+}
+
+export async function getLatestMenu(): Promise<Menu> {
+  const response = await axios.get<Menu>("http://localhost:3010/latest-menu");
+  return response.data;
 }
 
 export async function createRandomMenu(): Promise<Menu> {

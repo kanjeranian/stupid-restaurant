@@ -1,4 +1,5 @@
 import { OpenAIApi } from "openai";
+import { IMenu, Menu } from "./database";
 
 interface GPTMenuResponse {
   menuName: string;
@@ -6,14 +7,6 @@ interface GPTMenuResponse {
   ingredients: string[];
   description: string;
   dallePrompt: string;
-}
-
-export interface Menu {
-  menuName: string;
-  creativeName: string;
-  ingredients: string[];
-  description: string;
-  imageUrl?: string;
 }
 
 export class MenuService {
@@ -107,7 +100,17 @@ export class MenuService {
 
   constructor(private openAIApi: OpenAIApi) {}
 
-  generateIngredients(): string[] {
+  async getLatestMenu(): Promise<IMenu | null> {
+    return Menu.where({}).sort({ createdAt: "desc" }).findOne();
+  }
+
+  async createRandomMenu(): Promise<IMenu> {
+    const ingredients = this.generateIngredients();
+    const menu = await this.createMenuFromIngredients(ingredients);
+    return menu;
+  }
+
+  private generateIngredients(): string[] {
     const base1Index = Math.floor(Math.random() * this.base1Ingredients.length);
     const base2Index = Math.floor(Math.random() * this.base2Ingredients.length);
     const memeableIndex = Math.floor(
@@ -121,26 +124,29 @@ export class MenuService {
     return [base1, base2, memeable];
   }
 
-  async createMenuFromIngredients(
+  private async createMenuFromIngredients(
     requiredIngredients: string[]
-  ): Promise<Menu> {
-    const gptMenuResponse = await this.generateMenuInformation(
-      requiredIngredients
-    );
+  ): Promise<IMenu> {
+    const gptResponse = await this.requestMenuInformation(requiredIngredients);
+    const menuInformation = await this.parseMenuInformation(gptResponse);
 
-    return {
-      menuName: gptMenuResponse.menuName,
-      creativeName: gptMenuResponse.creativeName,
-      ingredients: gptMenuResponse.ingredients,
-      description: gptMenuResponse.description,
-      imageUrl: await this.createImageFromMenu(gptMenuResponse.dallePrompt),
-    };
+    const menu = new Menu({
+      gptResponse: gptResponse,
+      name: menuInformation.menuName,
+      creativeName: menuInformation.creativeName,
+      ingredients: menuInformation.ingredients,
+      description: menuInformation.description,
+      dallEPrompt: menuInformation.dallePrompt,
+      imageUrl: await this.createImageFromMenu(menuInformation.dallePrompt),
+      createdAt: new Date(),
+    });
+    await menu.save();
+
+    return menu;
   }
 
-  private async generateMenuInformation(
-    requiredIngredients: string[]
-  ): Promise<GPTMenuResponse> {
-    const prompt = `create a menu with ${requiredIngredients.join(
+  private async requestMenuInformation(ingredients: string[]): Promise<string> {
+    const prompt = `create a menu with ${ingredients.join(
       ", "
     )} provided information in this json format, please provided the creative name of the menu that people would amaze it, split each ingredients in to arrays element, please specify the DALL-E prompt for generating this menu image which looks disturbing, disgusting and horrible as much as possible
     {
@@ -159,13 +165,17 @@ export class MenuService {
       max_tokens: 500,
       temperature: 1,
     });
-    const responseText = response.data.choices[0].text ?? "{}";
-    console.log("oildel", responseText);
 
+    return response.data.choices[0].text ?? "{}";
+  }
+
+  private async parseMenuInformation(
+    promptResponse: string
+  ): Promise<GPTMenuResponse> {
     return JSON.parse(
-      responseText.substring(
-        responseText.indexOf("{"),
-        responseText.indexOf("}") + 1
+      promptResponse.substring(
+        promptResponse.indexOf("{"),
+        promptResponse.indexOf("}") + 1
       )
     );
   }
