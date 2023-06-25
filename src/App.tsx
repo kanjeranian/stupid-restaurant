@@ -5,6 +5,7 @@ import header from './assets/header.png';
 import logo from './assets/logo.png';
 import tape from './assets/tape.png';
 import ordernow from './assets/ordernow.png';
+import slogan from './assets/slogan.png';
 import orderAgain from './assets/orderAgain.png';
 import loading from './assets/loading.gif';
 import cookingText from './assets/cooking-text.gif';
@@ -33,6 +34,7 @@ function App() {
       <div className="container">
         <img src={header} alt="" className="headerImg" />
         {!isLoading && !menu && <img src={logo} alt="" className="logoImg" />}
+        {!isLoading && !menu && <img src={slogan} alt="" className="sloganImg" />}
         {!isLoading && !menu && <img src={ordernow} alt="" className="orderButton" onClick={onCreateNewMenu} />}
         
         {isLoading && <div className="loading-container">
