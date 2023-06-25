@@ -16,6 +16,8 @@ export async function getLatestMenu(): Promise<Menu> {
 }
 
 export async function createRandomMenu(): Promise<Menu> {
-  const response = await axios.post<Menu>(serverBaseUrl + "/create-menu");
+  const response = await axios.post<Menu>(
+    serverBaseUrl + "/create-random-menu"
+  );
   return response.data;
 }
