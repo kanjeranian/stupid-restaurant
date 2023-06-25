@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import React from "react";
 import { Menu, createRandomMenu, getLatestMenu } from "./menu-service";
 import header from './assets/header.png';
 import logo from './assets/logo.png';
@@ -9,14 +10,21 @@ import slogan from './assets/slogan.png';
 import orderAgain from './assets/orderAgain.png';
 import loading from './assets/loading.gif';
 import cookingText from './assets/cooking-text.gif';
+import sound from './assets/sound.mp3';
+
 
 function App() {
   const [isLoading, setLoading] = useState(false);
   const [menu, setMenu] = useState<Menu>();
+  const [isStart, setIsStart] = useState<boolean>(false)
 
   const onCreateNewMenu = async () => {
-    setLoading(true);
+  setLoading(true);
+  if(!isStart){
+    new Audio(sound).play()
+    setIsStart(true)
 
+  }
     try {
       const menu = await createRandomMenu();
       setMenu(menu);
@@ -26,7 +34,7 @@ function App() {
   };
 
   // useEffect(() => {
-  //   getLatestMenu().then(menu => setMenu(menu));
+    // getLatestMenu().then(menu => setMenu(menu));
   // }, [])
 
   return (
