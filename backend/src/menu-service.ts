@@ -9,7 +9,7 @@ interface GPTMenuResponse {
   dallePrompt: string;
 }
 
-const menuInfoPromptTemplate = `create a menu with {{ingredients}} provided information in this json format, please provided the creative name of the menu that people would amaze it, split each ingredients in to arrays element, please specify the DALL-E prompt for generating this menu image which looks disturbing, disgusting and horrible as much as possible
+const menuInfoPromptTemplate = `create a menu with {{ingredients}} provided information in this json format, please provided the creative name of the menu that people would amaze it, split each ingredients in to arrays element, please specify the DALL-E prompt for generating this menu image which looks disturbing, disgusting and horrible as much as possible, the background image should not be white
 {
   "menuName": "string",
   "creativeName": "string",
@@ -138,22 +138,28 @@ export class MenuService {
   async createMenuFromIngredients(
     requiredIngredients: string[]
   ): Promise<IMenu> {
-    const gptResponse = await this.requestMenuInformation(requiredIngredients);
-    const menuInformation = await this.parseMenuInformation(gptResponse);
+    try {
+      const gptResponse = await this.requestMenuInformation(
+        requiredIngredients
+      );
+      const menuInformation = await this.parseMenuInformation(gptResponse);
 
-    const menu = new Menu({
-      gptResponse: gptResponse,
-      name: menuInformation.menuName,
-      creativeName: menuInformation.creativeName,
-      ingredients: menuInformation.ingredients,
-      description: menuInformation.description,
-      dallEPrompt: menuInformation.dallePrompt,
-      imageUrl: await this.createImageFromMenu(menuInformation.dallePrompt),
-      createdAt: new Date(),
-    });
-    await menu.save();
+      const menu = new Menu({
+        gptResponse: gptResponse,
+        name: menuInformation.menuName,
+        creativeName: menuInformation.creativeName,
+        ingredients: menuInformation.ingredients,
+        description: menuInformation.description,
+        dallEPrompt: menuInformation.dallePrompt,
+        imageUrl: await this.createImageFromMenu(menuInformation.dallePrompt),
+        createdAt: new Date(),
+      });
+      await menu.save();
 
-    return menu;
+      return menu;
+    } catch (e) {
+      return (await this.getLatestMenu()) as IMenu;
+    }
   }
 
   private async requestMenuInformation(ingredients: string[]): Promise<string> {
